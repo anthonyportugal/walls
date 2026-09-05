@@ -11,6 +11,8 @@ Designed to integrate seamlessly with [anthonyportugal/dotfiles](https://github.
 | Preview | Name | Resolution | Format | Palette |
 | :---: | :--- | :---: | :---: | :--- |
 | ![w-001](wallpapers/w-001.webp) | `w-001` | 1920 × 1080 | WebP | Catppuccin Mocha |
+| ![w-002](wallpapers/w-002.webp) | `w-002` | 2184 × 1224 | WebP | Catppuccin Mocha |
+| ![w-003](wallpapers/w-003.webp) | `w-003` | 2184 × 1224 | WebP | Catppuccin Mocha |
 
 ---
 
