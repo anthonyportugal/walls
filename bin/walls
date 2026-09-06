@@ -292,11 +292,15 @@ generate_gallery_markdown() {
       esac
 
       printf '| `%s`%s | `%s`%s |\n' "$base1" "$tag1" "$base2" "$tag2"
-      printf '| :---: | :---: |\n'
+      if (( i == 0 )); then
+        printf '| :---: | :---: |\n'
+      fi
       printf '| <img src="wallpapers/%s" width="380" alt="%s"> | <img src="wallpapers/%s" width="380" alt="%s"> |\n' "$name1" "$base1" "$name2" "$base2"
     else
       printf '| `%s`%s | |\n' "$base1" "$tag1"
-      printf '| :---: | :---: |\n'
+      if (( i == 0 )); then
+        printf '| :---: | :---: |\n'
+      fi
       printf '| <img src="wallpapers/%s" width="380" alt="%s"> | |\n' "$name1" "$base1"
     fi
 

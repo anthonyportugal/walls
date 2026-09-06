@@ -65,7 +65,6 @@ dotfiles bootstrap --profile desktop --wm mangowm --wallpapers --apply
 | :---: | :---: |
 | <img src="wallpapers/w-001.webp" width="380" alt="w-001"> | <img src="wallpapers/w-002.webp" width="380" alt="w-002"> |
 | `w-003` (2K) | `w-004` (2K QHD) |
-| :---: | :---: |
 | <img src="wallpapers/w-003.webp" width="380" alt="w-003"> | <img src="wallpapers/w-004.webp" width="380" alt="w-004"> |
 
 </details>
