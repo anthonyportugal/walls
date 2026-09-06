@@ -4,25 +4,6 @@ Curated collection of high-resolution, lightweight wallpapers optimized for mini
 
 Designed to integrate seamlessly with [anthonyportugal/dotfiles](https://github.com/anthonyportugal/dotfiles) (MangoWM & BSPWM).
 
----
-
-## 🎨 Gallery
-
-| Preview | Name | Resolution | Format | Palette |
-| :---: | :--- | :---: | :---: | :--- |
-| ![w-001](wallpapers/w-001.webp) | `w-001` | 1920 × 1080 | WebP | Catppuccin Mocha |
-| ![w-002](wallpapers/w-002.webp) | `w-002` | 2184 × 1224 | WebP | Catppuccin Mocha |
-| ![w-003](wallpapers/w-003.webp) | `w-003` | 2184 × 1224 | WebP | Catppuccin Mocha |
-
----
-
-## ⚡ Formats & Optimization
-
-- **WebP:** Sole format in this repository. Offers high visual fidelity with ~50-80% smaller file sizes compared to uncompressed PNGs, leading to near-instant decoding and reduced RAM usage in `swaybg` and `feh`.
-- **Zero Duplication:** Original PNG/JPG images are converted upon addition into `wallpapers/` and not tracked in Git to maintain a featherweight clone size.
-
----
-
 ## 🛠 Management CLI (`bin/walls`)
 
 The repository includes a standalone CLI to manage the collection and system integration:
@@ -37,7 +18,7 @@ walls doctor
 # List all wallpapers with resolution and file size
 walls list
 
-# Add a new image (converts to WebP, auto-numbers w-XXX in wallpapers/, avoids duplicating original)
+# Add a new image (converts to WebP, auto-numbers w-XXX in wallpapers/)
 walls add ~/Downloads/wallpaper.png
 
 # Unlink from ~/.local/share/wallpapers and ~/.local/bin/walls
@@ -59,11 +40,34 @@ feh --no-fehbg --bg-fill ~/.local/share/wallpapers/w-001.webp
 ```
 
 ### 3. Integrated Dotfiles Bootstrap
-When bootstrapping dotfiles via `anthonyportugal/dotfiles`:
+When bootstrapping dotfiles via [anthonyportugal/dotfiles](https://github.com/anthonyportugal/dotfiles):
 
 ```bash
-~/.dotfiles/base/bin/dotfiles bootstrap --profile desktop --wm mangowm --wallpapers --apply
+dotfiles bootstrap --profile desktop --wm mangowm --wallpapers --apply
 ```
+
+---
+
+## ⚡ Formats & Optimization
+
+- **WebP:** Sole format in this repository. Offers high visual fidelity with ~50-80% smaller file sizes compared to uncompressed PNGs, leading to near-instant decoding and reduced RAM usage in `swaybg` and `feh`.
+- **Zero Duplication:** Original PNG/JPG images are converted upon addition into `wallpapers/` and not tracked in Git to maintain a featherweight clone size.
+
+---
+
+## 🎨 Gallery
+
+<details open>
+<summary><b>🖼️ Wallpaper Collection (4 available)</b> <i>— Click to collapse / expand</i></summary>
+<br>
+
+| `w-001` (1080p) | `w-002` (2K) |
+| :---: | :---: |
+| <img src="wallpapers/w-001.webp" width="380" alt="w-001"> | <img src="wallpapers/w-002.webp" width="380" alt="w-002"> |
+| **`w-003` (2K)** | **`w-004` (2K QHD)** |
+| <img src="wallpapers/w-003.webp" width="380" alt="w-003"> | <img src="wallpapers/w-004.webp" width="380" alt="w-004"> |
+
+</details>
 
 ---
 
