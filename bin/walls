@@ -34,14 +34,16 @@ Uso:
   $PROGRAM_NAME add <imagen.png|jpg> [--name w-XXX] [--quality 95]
   $PROGRAM_NAME doctor [--target DIR]
   $PROGRAM_NAME list
+  $PROGRAM_NAME update-readme
   $PROGRAM_NAME help
 
 Comandos:
-  link     Enlaza la colección a ~/.local/share/wallpapers y el ejecutable a ~/.local/bin/walls.
-  unlink   Retira los enlaces de ~/.local/share/wallpapers y ~/.local/bin/walls.
-  add      Convierte y añade una nueva imagen en formato WebP a wallpapers/.
-  doctor   Comprueba el estado del repositorio, los enlaces y los convertidores.
-  list     Lista los wallpapers disponibles con su resolución y peso.
+  link           Enlaza la colección a ~/.local/share/wallpapers y el ejecutable a ~/.local/bin/walls.
+  unlink         Retira los enlaces de ~/.local/share/wallpapers y ~/.local/bin/walls.
+  add            Convierte y añade una nueva imagen en formato WebP a wallpapers/.
+  doctor         Comprueba el estado del repositorio, los enlaces y los convertidores.
+  list           Lista los wallpapers disponibles con su resolución y peso.
+  update-readme  Actualiza automáticamente la galería de wallpapers en README.md.
 HELP
 }
 
@@ -232,6 +234,122 @@ cmd_add() {
 
   info "✓ Creado: $target_name ($(ls -lh "$destination" | awk '{print $5}'), ahorro: -${savings}%)"
   info "El archivo original NO se copia al repositorio para evitar duplicaciones."
+
+  cmd_update_readme
+}
+
+generate_gallery_markdown() {
+  local files=()
+  while IFS= read -r f; do
+    [[ -f "$f" ]] && files+=("$f")
+  done < <(find "$WALLPAPERS_DIR" -maxdepth 2 -type f -name "*.webp" 2>/dev/null | sort)
+
+  local total=${#files[@]}
+  if (( total == 0 )); then
+    return 0
+  fi
+
+  printf '<details open>\n'
+  printf '<summary><b>🖼️ Wallpaper Collection (%d available)</b> <i>— Click to collapse / expand</i></summary>\n' "$total"
+  printf '<br>\n\n'
+
+  local i=0
+  while (( i < total )); do
+    local f1="${files[i]}"
+    local name1="${f1##*/}"
+    local base1="${name1%.webp}"
+    local res1=""
+    if command -v identify >/dev/null 2>&1; then
+      res1=$(identify -format "%wx%h" "$f1" 2>/dev/null || true)
+    fi
+    local tag1=""
+    case "$res1" in
+      1920x1080) tag1=" (1080p)" ;;
+      2184x1224) tag1=" (2K)" ;;
+      2560x1440) tag1=" (2K QHD)" ;;
+      3840x2160) tag1=" (4K UHD)" ;;
+      "") tag1="" ;;
+      *) tag1=" ($res1)" ;;
+    esac
+
+    local j=$(( i + 1 ))
+    if (( j < total )); then
+      local f2="${files[j]}"
+      local name2="${f2##*/}"
+      local base2="${name2%.webp}"
+      local res2=""
+      if command -v identify >/dev/null 2>&1; then
+        res2=$(identify -format "%wx%h" "$f2" 2>/dev/null || true)
+      fi
+      local tag2=""
+      case "$res2" in
+        1920x1080) tag2=" (1080p)" ;;
+        2184x1224) tag2=" (2K)" ;;
+        2560x1440) tag2=" (2K QHD)" ;;
+        3840x2160) tag2=" (4K UHD)" ;;
+        "") tag2="" ;;
+        *) tag2=" ($res2)" ;;
+      esac
+
+      printf '| `%s`%s | `%s`%s |\n' "$base1" "$tag1" "$base2" "$tag2"
+      printf '| :---: | :---: |\n'
+      printf '| <img src="wallpapers/%s" width="380" alt="%s"> | <img src="wallpapers/%s" width="380" alt="%s"> |\n' "$name1" "$base1" "$name2" "$base2"
+    else
+      printf '| `%s`%s | |\n' "$base1" "$tag1"
+      printf '| :---: | :---: |\n'
+      printf '| <img src="wallpapers/%s" width="380" alt="%s"> | |\n' "$name1" "$base1"
+    fi
+
+    (( i += 2 ))
+  done
+
+  printf '\n</details>\n'
+}
+
+cmd_update_readme() {
+  local readme="$REPO_ROOT/README.md"
+  [[ -f "$readme" ]] || return 0
+
+  local gallery_file tmp_file
+  gallery_file=$(mktemp)
+  tmp_file=$(mktemp)
+  generate_gallery_markdown > "$gallery_file"
+
+  [[ -s "$gallery_file" ]] || {
+    rm -f "$gallery_file" "$tmp_file"
+    return 0
+  }
+
+  awk '
+    BEGIN { in_gallery = 0 }
+    /^## 🎨 Gallery/ {
+      print
+      print ""
+      while ((getline line < gallery_path) > 0) {
+        print line
+      }
+      close(gallery_path)
+      in_gallery = 1
+      next
+    }
+    in_gallery && /^---/ {
+      in_gallery = 0
+      print
+      next
+    }
+    !in_gallery {
+      print
+    }
+  ' gallery_path="$gallery_file" "$readme" > "$tmp_file"
+
+  rm -f "$gallery_file"
+
+  if cmp -s "$readme" "$tmp_file"; then
+    rm -f "$tmp_file"
+  else
+    mv "$tmp_file" "$readme"
+    info "✓ README.md actualizado automáticamente con la galería de wallpapers."
+  fi
 }
 
 cmd_doctor() {
@@ -355,6 +473,9 @@ main() {
       ;;
     list)
       cmd_list
+      ;;
+    update-readme)
+      cmd_update_readme
       ;;
     help|-h|--help)
       usage
