@@ -1,6 +1,7 @@
 # Walls
 
 <p align="center">
+  <a href="https://github.com/anthonyportugal/walls/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/anthonyportugal/walls/ci.yml?branch=main&style=flat-square&logo=githubactions&logoColor=white&label=CI" alt="CI"></a>
   <a href="https://kernel.org"><img src="https://img.shields.io/badge/OS-Linux-FCC624?style=flat-square&logo=linux&logoColor=black" alt="Linux"></a>
   <a href="https://developers.google.com/speed/webp"><img src="https://img.shields.io/badge/Format-WebP_Optimized-green?style=flat-square" alt="WebP"></a>
   <a href="https://github.com/catppuccin/catppuccin"><img src="https://img.shields.io/badge/Palette-Catppuccin_Mocha-f5c2e7?style=flat-square&logo=catppuccin&logoColor=1e1e2e" alt="Theme"></a>
@@ -12,7 +13,7 @@ Curated collection of high-resolution, lightweight wallpapers optimized for mini
 
 > [!TIP]
 > 🧩 **Modular Dotfiles Ecosystem:**  
-> [Base & CLI](https://github.com/anthonyportugal/dotfiles) • [MangoWM (Wayland)](https://github.com/anthonyportugal/dotfiles-mangowm) • [BSPWM (X11)](https://github.com/anthonyportugal/dotfiles-bspwm) • **Wallpapers [Current]**
+> [Base & CLI](https://github.com/anthonyportugal/dotfiles) • [MangoWM (Wayland)](https://github.com/anthonyportugal/dotfiles-mangowm) • [BSPWM (X11)](https://github.com/anthonyportugal/dotfiles-bspwm) • **Wallpapers [Current]** • [System (Ly & Limine)](https://github.com/anthonyportugal/dotfiles-system)
 > 
 > Designed to integrate seamlessly with [anthonyportugal/dotfiles](https://github.com/anthonyportugal/dotfiles) (both MangoWM and BSPWM sessions) or function as a completely standalone wallpaper manager.
 
