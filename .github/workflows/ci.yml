@@ -1,0 +1,46 @@
+name: CI
+
+on:
+  push:
+    branches: [ "main" ]
+    paths-ignore:
+      - '**.md'
+      - 'LICENSE'
+      - '.gitignore'
+      - 'wallpapers/**'
+  pull_request:
+    branches: [ "main" ]
+    paths-ignore:
+      - '**.md'
+      - 'LICENSE'
+      - '.gitignore'
+      - 'wallpapers/**'
+  workflow_dispatch:
+
+jobs:
+  lint:
+    name: ShellCheck & Syntax
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Validate syntax (bash -n)
+        run: |
+          bash -n bin/walls scripts/*.sh tests/*.sh
+
+      - name: Run ShellCheck
+        run: |
+          shellcheck bin/walls scripts/optimize.sh tests/smoke.sh
+
+  test:
+    name: Smoke Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run smoke tests
+        run: |
+          chmod +x bin/walls scripts/*.sh tests/*.sh
+          ./tests/smoke.sh
