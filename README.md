@@ -105,6 +105,7 @@ dotfiles bootstrap --profile desktop --wm mangowm --wallpapers --apply
 
 ---
 
-## 📄 License
+## 📄 License & Attribution
 
-MIT © [Anthony Portugal](https://github.com/anthonyportugal)
+- **Scripts & CLI (`bin/walls`, `scripts/`):** Distributed under the [MIT License](LICENSE) © [Anthony Portugal](https://github.com/anthonyportugal).
+- **Wallpapers & Artwork:** Curated and color-adapted for the Catppuccin Mocha aesthetic for personal, non-commercial desktop customization. All copyright and intellectual property rights belong to their respective original artists. If you are the original creator of any wallpaper included here and wish for it to be credited or removed, please open an issue and it will be handled promptly.
