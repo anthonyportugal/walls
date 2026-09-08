@@ -40,6 +40,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Install dependencies (webp)
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq webp
+
       - name: Run smoke tests
         run: |
           chmod +x bin/walls scripts/*.sh tests/*.sh
