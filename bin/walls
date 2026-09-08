@@ -134,6 +134,7 @@ cmd_unlink() {
   fi
 }
 
+# shellcheck disable=SC2012
 cmd_list() {
   local count=0
   printf "%-14s %-12s %-10s %s\n" "ARCHIVO" "RESOLUCIÓN" "PESO" "RUTA"
@@ -157,6 +158,7 @@ cmd_list() {
   printf "\nTotal: %d wallpaper(s) en WebP.\n" "$count"
 }
 
+# shellcheck disable=SC2012
 cmd_add() {
   local input_file=${1:-}
   [[ -n "$input_file" ]] || die "Debe especificar la ruta a la imagen que desea agregar."
@@ -238,6 +240,7 @@ cmd_add() {
   cmd_update_readme
 }
 
+# shellcheck disable=SC2016
 generate_gallery_markdown() {
   local files=()
   while IFS= read -r f; do
