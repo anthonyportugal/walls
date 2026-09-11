@@ -29,6 +29,7 @@ die() {
 usage() {
   cat <<HELP
 Uso:
+  $PROGRAM_NAME setup [--target DIR] [--lang en|es]
   $PROGRAM_NAME link [--target DIR]
   $PROGRAM_NAME unlink [--target DIR]
   $PROGRAM_NAME add <imagen.png|jpg> [--name w-XXX] [--quality 95]
@@ -38,6 +39,7 @@ Uso:
   $PROGRAM_NAME help
 
 Comandos:
+  setup          Asistente interactivo guiado para configurar la galería y enlaces.
   link           Enlaza la colección a ~/.local/share/wallpapers y el ejecutable a ~/.local/bin/walls.
   unlink         Retira los enlaces de ~/.local/share/wallpapers y ~/.local/bin/walls.
   add            Convierte y añade una nueva imagen en formato WebP a wallpapers/.
@@ -423,6 +425,152 @@ cmd_doctor() {
   fi
 }
 
+DOTFILES_LANG="${DOTFILES_LANG:-}"
+
+# shellcheck disable=SC2034
+C_RESET=''
+C_BOLD=''
+C_PINK=''
+C_MAUVE=''
+C_BLUE=''
+C_GREEN=''
+C_YELLOW=''
+C_RED=''
+C_SUBTEXT=''
+
+# shellcheck disable=SC2034
+wizard_colors() {
+  if [[ -t 1 ]] && command -v tput >/dev/null 2>&1 && (( $(tput colors 2>/dev/null || echo 0) >= 8 )); then
+    C_RESET='\033[0m'
+    C_BOLD='\033[1m'
+    C_PINK='\033[38;2;245;194;231m'
+    C_MAUVE='\033[38;2;203;166;247m'
+    C_BLUE='\033[38;2;137;180;250m'
+    C_GREEN='\033[38;2;166;227;161m'
+    C_YELLOW='\033[38;2;249;226;175m'
+    C_RED='\033[38;2;243;139;168m'
+    C_SUBTEXT='\033[38;2;166;173;200m'
+  else
+    C_RESET='' C_BOLD='' C_PINK='' C_MAUVE='' C_BLUE=''
+    C_GREEN='' C_YELLOW='' C_RED='' C_SUBTEXT=''
+  fi
+}
+
+_t() {
+  local en_text=$1
+  local es_text=${2:-$1}
+  if [[ "${DOTFILES_LANG:-en}" == "es" ]]; then
+    printf '%b' "$es_text"
+  else
+    printf '%b' "$en_text"
+  fi
+}
+
+prettify_path() {
+  local p=${1:-}
+  local clean
+  clean="$(cd -P "$p" 2>/dev/null && pwd -P)" || clean="$p"
+  [[ "$clean" == "$HOME"* ]] && clean="~${clean#"$HOME"}"
+  printf '%s' "$clean"
+}
+
+prompt_choice() {
+  local var_name=$1
+  local title=$2
+  shift 2
+  local -a options=("$@")
+  local choice=""
+
+  printf '\n%b%s%b\n' "${C_BOLD}${C_MAUVE}" "$title" "$C_RESET"
+  local i=1
+  for opt in "${options[@]}"; do
+    printf '  %b[%d]%b %s\n' "$C_PINK" "$i" "$C_RESET" "$opt"
+    (( i++ ))
+  done
+
+  while true; do
+    printf '%b%s (1-%d): %b' "$C_BLUE" "$(_t "Select an option" "Selecciona una opción")" "${#options[@]}" "$C_RESET"
+    read -r choice || return 1
+    if [[ "$choice" =~ ^[0-9]+$ ]] && (( choice >= 1 && choice <= ${#options[@]} )); then
+      printf -v "$var_name" '%d' "$(( choice - 1 ))"
+      return 0
+    fi
+    printf '%b%s%b\n' "$C_RED" "$(_t "Invalid option. Please try again." "Opción inválida. Intenta nuevamente.")" "$C_RESET"
+  done
+}
+
+cmd_setup() {
+  wizard_colors
+
+  if [[ -z "${DOTFILES_LANG:-}" ]]; then
+    clear 2>/dev/null || true
+    local lang_choice=0
+    prompt_choice lang_choice "Select language / Selecciona el idioma" \
+      "English [Default]" \
+      "Español"
+    if (( lang_choice == 1 )); then
+      DOTFILES_LANG="es"
+    else
+      DOTFILES_LANG="en"
+    fi
+  fi
+
+  clear 2>/dev/null || true
+  printf '%b' "$C_MAUVE"
+  cat <<'EOF'
+╭─────────────────────────────────────────────────────────────╮
+│                      ANTHONY PORTUGAL                       │
+│                    walls • Setup Wizard                     │
+│         Curated Wallpaper Collection & Integration          │
+╰─────────────────────────────────────────────────────────────╯
+EOF
+  printf '%b\n' "$C_RESET"
+
+  local target_home=${TARGET_DIR:-$HOME}
+  local target_data="${XDG_DATA_HOME:-$target_home/.local/share}/wallpapers"
+  local target_bin="$target_home/.local/bin/walls"
+
+  local count=0
+  if [[ -d "$WALLPAPERS_DIR" ]]; then
+    count=$(find "$WALLPAPERS_DIR" -maxdepth 1 -type f -name '*.webp' 2>/dev/null | wc -l || echo 0)
+  fi
+
+  printf '%b%s%b\n' "$C_BOLD" "$(_t "Detected environment:" "Estado detectado:")" "$C_RESET"
+  printf '  • %s: %s (%s %s)\n' "$(_t "Wallpapers Source" "Origen de Wallpapers")" "$(prettify_path "$WALLPAPERS_DIR")" "$count" "$(_t "wallpapers" "fondos")"
+  printf '  • %s: %s\n' "$(_t "Target Data Link" "Enlace Destino (Data)")" "$(prettify_path "$target_data")"
+  printf '  • %s: %s\n' "$(_t "Target CLI Link" "Enlace Destino (CLI)")" "$(prettify_path "$target_bin")"
+
+  local action_choice=0
+  prompt_choice action_choice "$(_t "Select action to perform" "Selecciona la acción a realizar")" \
+    "$(_t "Link wallpapers & CLI command to environment [Recommended]" "Enlazar colección y comando CLI al entorno [Recomendado]")" \
+    "$(_t "Run diagnostics and check links (doctor)" "Ejecutar diagnóstico y comprobar enlaces (doctor)")" \
+    "$(_t "List all available wallpapers" "Listar todos los wallpapers disponibles")" \
+    "$(_t "Unlink wallpapers & CLI from environment" "Retirar enlaces de wallpapers y comando CLI")" \
+    "$(_t "Cancel and exit" "Cancelar y salir")"
+
+  case "$action_choice" in
+    0)
+      cmd_link
+      printf '\n'
+      cmd_doctor
+      info "$(_t "Wallpapers setup completed successfully." "Configuración de wallpapers completada con éxito.")"
+      ;;
+    1)
+      cmd_doctor
+      ;;
+    2)
+      cmd_list
+      ;;
+    3)
+      cmd_unlink
+      ;;
+    4)
+      info "$(_t "Operation cancelled by user." "Operación cancelada por el usuario.")"
+      return 0
+      ;;
+  esac
+}
+
 main() {
   if (( $# == 0 )); then
     usage
@@ -433,6 +581,28 @@ main() {
   shift
 
   case "$action" in
+    setup)
+      while (( $# > 0 )); do
+        case "$1" in
+          --target)
+            TARGET_DIR=$2
+            shift 2
+            ;;
+          --lang)
+            DOTFILES_LANG=$2
+            shift 2
+            ;;
+          --lang=*)
+            DOTFILES_LANG=${1#*=}
+            shift
+            ;;
+          *)
+            die "Opción desconocida para setup: $1"
+            ;;
+        esac
+      done
+      cmd_setup
+      ;;
     link)
       while (( $# > 0 )); do
         case "$1" in
