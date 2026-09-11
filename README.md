@@ -33,6 +33,12 @@ Curated collection of high-resolution, lightweight wallpapers optimized for mini
 The repository includes a standalone CLI to manage the collection and system integration:
 
 ```bash
+# Launch the interactive setup wizard (links collection, CLI command & audits health)
+./bin/walls setup
+
+# Or launch directly in Spanish
+./bin/walls setup --lang es
+
 # Link wallpapers to ~/.local/share/wallpapers and command to ~/.local/bin/walls
 ./bin/walls link
 
