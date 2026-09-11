@@ -13,7 +13,7 @@ Curated collection of high-resolution, lightweight wallpapers optimized for mini
 
 > [!TIP]
 > 🧩 **Modular Dotfiles Ecosystem:**  
-> [Base & CLI](https://github.com/anthonyportugal/dotfiles) • [MangoWM (Wayland)](https://github.com/anthonyportugal/dotfiles-mangowm) • [BSPWM (X11)](https://github.com/anthonyportugal/dotfiles-bspwm) • **Wallpapers [Current]** • [System (Ly & Limine)](https://github.com/anthonyportugal/dotfiles-system)
+> [Base & CLI](https://github.com/anthonyportugal/dotfiles) • [MangoWM (Wayland)](https://github.com/anthonyportugal/dotfiles-mangowm) • [BSPWM (X11)](https://github.com/anthonyportugal/dotfiles-bspwm) • **Wallpapers [Current]** • [System](https://github.com/anthonyportugal/dotfiles-system)
 > 
 > Designed to integrate seamlessly with [anthonyportugal/dotfiles](https://github.com/anthonyportugal/dotfiles) (both MangoWM and BSPWM sessions) or function as a completely standalone wallpaper manager.
 
