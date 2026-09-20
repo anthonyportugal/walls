@@ -39,6 +39,12 @@ The repository includes a standalone CLI to manage the collection and system int
 # Or launch directly in Spanish
 ./bin/walls setup --lang es
 
+# Re-synchronize wallpaper and CLI symlinks without touching Git
+walls sync
+
+# Pull latest updates from remote repository and re-synchronize
+walls update
+
 # Link wallpapers to ~/.local/share/wallpapers and command to ~/.local/bin/walls
 ./bin/walls link
 

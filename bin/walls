@@ -8,17 +8,55 @@ REPO_ROOT=$(cd -- "$SCRIPT_DIR/.." && pwd -P)
 WALLPAPERS_DIR="$REPO_ROOT/wallpapers"
 
 TARGET_DIR=${HOME:-}
+DOTFILES_LANG="${DOTFILES_LANG:-en}"
+FORCE_YES=0
+
+_t() {
+  local en_text=$1
+  local es_text=${2:-$1}
+  if [[ "${DOTFILES_LANG:-en}" == "es" ]]; then
+    printf '%b' "$es_text"
+  else
+    printf '%b' "$en_text"
+  fi
+}
+
+setup_colors() {
+  if [[ -t 1 ]] && command -v tput >/dev/null 2>&1 && (( $(tput colors 2>/dev/null || echo 0) >= 8 )); then
+    C_RESET='\033[0m'
+    C_BOLD='\033[1m'
+    C_PINK='\033[38;2;245;194;231m'
+    C_MAUVE='\033[38;2;203;166;247m'
+    C_BLUE='\033[38;2;137;180;250m'
+    C_GREEN='\033[38;2;166;227;161m'
+    C_YELLOW='\033[38;2;249;226;175m'
+    C_RED='\033[38;2;243;139;168m'
+    C_SUBTEXT='\033[38;2;166;173;200m'
+  else
+    C_RESET='' C_BOLD='' C_PINK='' C_MAUVE='' C_BLUE=''
+    C_GREEN='' C_YELLOW='' C_RED='' C_SUBTEXT=''
+  fi
+}
+setup_colors
 
 info() {
-  printf "==> %s\n" "$*"
+  printf '%b%b[%s]%b %b==>%b %s\n' "$C_MAUVE" "$C_BOLD" "$PROGRAM_NAME" "$C_RESET" "$C_BLUE" "$C_RESET" "$*"
+}
+
+success() {
+  printf '%b%b[%s]%b %b✓%b %b%s%b\n' "$C_MAUVE" "$C_BOLD" "$PROGRAM_NAME" "$C_RESET" "$C_GREEN" "$C_RESET" "$C_BOLD" "$*" "$C_RESET"
 }
 
 warn() {
-  printf "aviso: %s\n" "$*" >&2
+  local label
+  label=$(_t "warning:" "aviso:")
+  printf '%b%b[%s]%b %b%b%s%b %s\n' "$C_MAUVE" "$C_BOLD" "$PROGRAM_NAME" "$C_RESET" "$C_YELLOW" "$C_BOLD" "$label" "$C_RESET" "$*" >&2
 }
 
 error() {
-  printf "error: %s\n" "$*" >&2
+  local label
+  label=$(_t "error:" "error:")
+  printf '%b%b[%s]%b %b%b%s%b %s\n' "$C_MAUVE" "$C_BOLD" "$PROGRAM_NAME" "$C_RESET" "$C_RED" "$C_BOLD" "$label" "$C_RESET" "$*" >&2
 }
 
 die() {
@@ -27,9 +65,12 @@ die() {
 }
 
 usage() {
-  cat <<HELP
+  if [[ "${DOTFILES_LANG:-en}" == "es" ]]; then
+    cat <<HELP
 Uso:
   $PROGRAM_NAME setup [--target DIR] [--lang en|es]
+  $PROGRAM_NAME sync [--target DIR]
+  $PROGRAM_NAME update [--target DIR] [-y|--yes]
   $PROGRAM_NAME link [--target DIR]
   $PROGRAM_NAME unlink [--target DIR]
   $PROGRAM_NAME add <imagen.png|jpg> [--name w-XXX] [--quality 95]
@@ -40,13 +81,53 @@ Uso:
 
 Comandos:
   setup          Asistente interactivo guiado para configurar la galería y enlaces.
+  sync           Re-sincroniza los enlaces de wallpapers y el comando walls.
+  update         Obtiene actualizaciones remotas (fast-forward) y sincroniza.
   link           Enlaza la colección a ~/.local/share/wallpapers y el ejecutable a ~/.local/bin/walls.
   unlink         Retira los enlaces de ~/.local/share/wallpapers y ~/.local/bin/walls.
   add            Convierte y añade una nueva imagen en formato WebP a wallpapers/.
   doctor         Comprueba el estado del repositorio, los enlaces y los convertidores.
   list           Lista los wallpapers disponibles con su resolución y peso.
   update-readme  Actualiza automáticamente la galería de wallpapers en README.md.
+
+Opciones:
+  --target DIR   Directorio home destino (default: \$HOME).
+  --lang en|es   Idioma de la interfaz (default: en).
+  -y, --yes      Confirmación automática en prompts de actualización.
+  -h, --help     Muestra esta ayuda.
 HELP
+  else
+    cat <<HELP
+Usage:
+  $PROGRAM_NAME setup [--target DIR] [--lang en|es]
+  $PROGRAM_NAME sync [--target DIR]
+  $PROGRAM_NAME update [--target DIR] [-y|--yes]
+  $PROGRAM_NAME link [--target DIR]
+  $PROGRAM_NAME unlink [--target DIR]
+  $PROGRAM_NAME add <image.png|jpg> [--name w-XXX] [--quality 95]
+  $PROGRAM_NAME doctor [--target DIR]
+  $PROGRAM_NAME list
+  $PROGRAM_NAME update-readme
+  $PROGRAM_NAME help
+
+Commands:
+  setup          Interactive guided assistant to configure wallpapers and symlinks.
+  sync           Re-synchronizes wallpaper collection and CLI symlinks.
+  update         Pulls updates from remote repository (fast-forward) and syncs.
+  link           Links wallpapers to ~/.local/share/wallpapers and binary to ~/.local/bin/walls.
+  unlink         Removes symlinks from ~/.local/share/wallpapers and ~/.local/bin/walls.
+  add            Converts and adds a new image in WebP format to wallpapers/.
+  doctor         Checks repository status, symlinks, and image converters.
+  list           Lists available wallpapers with resolution and file size.
+  update-readme  Automatically updates wallpaper gallery preview in README.md.
+
+Options:
+  --target DIR   Target home directory (default: \$HOME).
+  --lang en|es   Interface language (default: en).
+  -y, --yes      Automatic yes to update prompts.
+  -h, --help     Show this help.
+HELP
+  fi
 }
 
 find_converter() {
@@ -425,44 +506,90 @@ cmd_doctor() {
   fi
 }
 
-DOTFILES_LANG="${DOTFILES_LANG:-}"
-
-# shellcheck disable=SC2034
-C_RESET=''
-C_BOLD=''
-C_PINK=''
-C_MAUVE=''
-C_BLUE=''
-C_GREEN=''
-C_YELLOW=''
-C_RED=''
-C_SUBTEXT=''
-
 # shellcheck disable=SC2034
 wizard_colors() {
-  if [[ -t 1 ]] && command -v tput >/dev/null 2>&1 && (( $(tput colors 2>/dev/null || echo 0) >= 8 )); then
-    C_RESET='\033[0m'
-    C_BOLD='\033[1m'
-    C_PINK='\033[38;2;245;194;231m'
-    C_MAUVE='\033[38;2;203;166;247m'
-    C_BLUE='\033[38;2;137;180;250m'
-    C_GREEN='\033[38;2;166;227;161m'
-    C_YELLOW='\033[38;2;249;226;175m'
-    C_RED='\033[38;2;243;139;168m'
-    C_SUBTEXT='\033[38;2;166;173;200m'
-  else
-    C_RESET='' C_BOLD='' C_PINK='' C_MAUVE='' C_BLUE=''
-    C_GREEN='' C_YELLOW='' C_RED='' C_SUBTEXT=''
-  fi
+  setup_colors
 }
 
-_t() {
-  local en_text=$1
-  local es_text=${2:-$1}
+prompt_yes_no() {
+  local question=$1
+  local default_val=${2:-Y}
+  local response=""
+  local prompt_suffix="[Y/n]"
+  [[ "$default_val" =~ ^[Nn]$ ]] && prompt_suffix="[y/N]"
   if [[ "${DOTFILES_LANG:-en}" == "es" ]]; then
-    printf '%b' "$es_text"
+    prompt_suffix="[S/n]"
+    [[ "$default_val" =~ ^[Nn]$ ]] && prompt_suffix="[s/N]"
+  fi
+
+  while true; do
+    printf '%b%s %b%s%b ' "${C_BOLD}" "$question" "${C_SUBTEXT}" "$prompt_suffix" "$C_RESET"
+    read -r response || return 1
+    if [[ -z "$response" ]]; then
+      response=$default_val
+    fi
+    case "$response" in
+      [yY]|[yY][eE][sS]|[sS]|[sS][iI])
+        return 0
+        ;;
+      [nN]|[nN][oO])
+        return 1
+        ;;
+      *)
+        printf '%b%s%b\n' "$C_RED" "$(_t "Please answer Y or N." "Por favor responde S o N.")" "$C_RESET"
+        ;;
+    esac
+  done
+}
+
+cmd_sync() {
+  info "$(_t "Resynchronizing wallpaper symlinks..." "Re-sincronizando enlaces de wallpapers...")"
+  cmd_link
+  success "$(_t "Wallpapers resynchronization completed successfully." "Re-sincronización de wallpapers completada exitosamente.")"
+}
+
+cmd_update() {
+  info "$(_t "Checking wallpapers repository for updates..." "Comprobando actualizaciones en el repositorio de wallpapers...")"
+  command -v git >/dev/null 2>&1 || die "$(_t "git is required to update from remote repositories" "git es necesario para actualizar desde repositorios remotos")"
+
+  local git_status
+  git_status=$(git -C "$REPO_ROOT" status --porcelain 2>/dev/null || true)
+  if [[ -n "$git_status" ]]; then
+    warn "$(_t "Repository has uncommitted local changes; skipping git pull to protect your work" "El repositorio tiene cambios locales sin confirmar; omitiendo git pull para proteger su trabajo")"
+    return 0
+  fi
+
+  local head_before head_after pull_output
+  head_before=$(git -C "$REPO_ROOT" rev-parse HEAD 2>/dev/null || true)
+  if ! pull_output=$(GIT_SSH_COMMAND="ssh -o BatchMode=yes" GIT_TERMINAL_PROMPT=0 git -C "$REPO_ROOT" pull --ff-only 2>&1); then
+    warn "$(_t "Could not fast-forward; skipping" "No se pudo realizar fast-forward; omitiendo")"
+    [[ -n "$pull_output" ]] && printf '%s\n' "$pull_output"
+    return 1
+  fi
+
+  head_after=$(git -C "$REPO_ROOT" rev-parse HEAD 2>/dev/null || true)
+  if [[ -n "$head_before" && -n "$head_after" && "$head_before" == "$head_after" ]]; then
+    success "$(_t "Wallpapers is already up to date. No synchronization needed." "Wallpapers ya está al día. No se requiere sincronización.")"
+    return 0
+  fi
+
+  info "$(_t "Wallpapers updated" "Wallpapers actualizado") (${head_before:0:7}..${head_after:0:7})"
+
+  local do_sync=1
+  if [[ -t 0 && -t 1 ]] && (( ${FORCE_YES:-0} == 0 )); then
+    local question
+    question=$(_t \
+      "Wallpapers repository was updated. Do you want to resynchronize links now?" \
+      "El repositorio de wallpapers fue actualizado. ¿Deseas re-sincronizar los enlaces ahora?")
+    if ! prompt_yes_no "$question" "Y"; then
+      do_sync=0
+    fi
+  fi
+
+  if (( do_sync == 1 )); then
+    cmd_sync
   else
-    printf '%b' "$en_text"
+    info "$(_t "Resynchronization skipped by user. You can run '$PROGRAM_NAME sync' whenever you want to apply it." "Re-sincronización omitida por el usuario. Puedes ejecutar '$PROGRAM_NAME sync' cuando desees aplicarla.")"
   fi
 }
 
@@ -572,7 +699,42 @@ EOF
 }
 
 main() {
+  local -a args_filtered=()
+  while (( $# > 0 )); do
+    case "$1" in
+      --lang)
+        [[ -n "${2-}" ]] || die "option --lang requires a value"
+        DOTFILES_LANG=$2
+        export DOTFILES_LANG
+        shift 2
+        ;;
+      --lang=*)
+        DOTFILES_LANG=${1#*=}
+        [[ -n "$DOTFILES_LANG" ]] || die "option --lang requires a value"
+        export DOTFILES_LANG
+        shift
+        ;;
+      -y|--yes)
+        FORCE_YES=1
+        shift
+        ;;
+      *)
+        args_filtered+=("$1")
+        shift
+        ;;
+    esac
+  done
+  if (( ${#args_filtered[@]} > 0 )); then
+    set -- "${args_filtered[@]}"
+  else
+    set --
+  fi
+
   if (( $# == 0 )); then
+    if [[ -t 0 && -t 1 ]]; then
+      cmd_setup
+      return 0
+    fi
     usage
     exit 0
   fi
@@ -588,20 +750,40 @@ main() {
             TARGET_DIR=$2
             shift 2
             ;;
-          --lang)
-            DOTFILES_LANG=$2
-            shift 2
-            ;;
-          --lang=*)
-            DOTFILES_LANG=${1#*=}
-            shift
-            ;;
           *)
-            die "Opción desconocida para setup: $1"
+            die "$(_t "Unknown option for setup: $1" "Opción desconocida para setup: $1")"
             ;;
         esac
       done
       cmd_setup
+      ;;
+    sync)
+      while (( $# > 0 )); do
+        case "$1" in
+          --target)
+            TARGET_DIR=$2
+            shift 2
+            ;;
+          *)
+            die "$(_t "Unknown option for sync: $1" "Opción desconocida para sync: $1")"
+            ;;
+        esac
+      done
+      cmd_sync
+      ;;
+    update)
+      while (( $# > 0 )); do
+        case "$1" in
+          --target)
+            TARGET_DIR=$2
+            shift 2
+            ;;
+          *)
+            die "$(_t "Unknown option for update: $1" "Opción desconocida para update: $1")"
+            ;;
+        esac
+      done
+      cmd_update
       ;;
     link)
       while (( $# > 0 )); do
@@ -611,7 +793,7 @@ main() {
             shift 2
             ;;
           *)
-            die "Opción desconocida para link: $1"
+            die "$(_t "Unknown option for link: $1" "Opción desconocida para link: $1")"
             ;;
         esac
       done
@@ -625,7 +807,7 @@ main() {
             shift 2
             ;;
           *)
-            die "Opción desconocida para unlink: $1"
+            die "$(_t "Unknown option for unlink: $1" "Opción desconocida para unlink: $1")"
             ;;
         esac
       done
@@ -642,7 +824,7 @@ main() {
             shift 2
             ;;
           *)
-            die "Opción desconocida para doctor: $1"
+            die "$(_t "Unknown option for doctor: $1" "Opción desconocida para doctor: $1")"
             ;;
         esac
       done
@@ -658,7 +840,7 @@ main() {
       usage
       ;;
     *)
-      die "Comando desconocido: $action. Use $PROGRAM_NAME help."
+      die "$(_t "Unknown command: $action. Use $PROGRAM_NAME help." "Comando desconocido: $action. Use $PROGRAM_NAME help.")"
       ;;
   esac
 }
