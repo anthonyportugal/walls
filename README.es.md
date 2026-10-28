@@ -17,51 +17,56 @@ Colección curada de fondos de pantalla ligeros y en alta resolución optimizado
 > 🧩 **Ecosistema Modular de Dotfiles:**  
 > [Base y CLI](https://github.com/anthonyportugal/dotfiles) • [MangoWM (Wayland)](https://github.com/anthonyportugal/dotfiles-mangowm) • [BSPWM (X11)](https://github.com/anthonyportugal/dotfiles-bspwm) • **Fondos de Pantalla [Actual]** • [Sistema](https://github.com/anthonyportugal/dotfiles-system)
 > 
-> Diseñado para integrarse perfectamente con [anthonyportugal/dotfiles](https://github.com/anthonyportugal/dotfiles) (tanto en sesiones MangoWM como BSPWM) o para funcionar como un gestor de fondos de pantalla totalmente autónomo.
+> Se instala y enlaza con [anthonyportugal/dotfiles](https://github.com/anthonyportugal/dotfiles) mediante `dotfiles add walls` (tanto en sesiones MangoWM como BSPWM).
 
 ---
 
 ## ✨ Características Principales
 
 - ⚡ **Almacenamiento Puro en WebP:** Cero sobrepeso de archivos PNG o JPG sin comprimir; tamaño de clonación entre 50% y 80% menor con menor consumo de memoria en los daemons de fondos de pantalla.
-- 🛠️ **CLI de Gestión Autónomo:** Agrega, autoconvierte, lista, vincula y diagnostica fondos de pantalla fácilmente mediante `bin/walls`.
+- 🛠️ **CLI de la Colección:** Agrega, autoconvierte y lista fondos de pantalla mediante `bin/walls`; la instalación es un único `dotfiles add walls`.
 - 🎛️ **Compatibilidad Dual-WM:** Integración lista para usar con `swaybg` (Wayland / MangoWM) y `feh` (X11 / BSPWM).
 - 🖼️ **Galería Automatizada:** Generador instantáneo de tablas de vista previa en Markdown para mantener el README limpio, responsivo y actualizado.
 
 ---
 
-## 🛠️ CLI de Gestión (`bin/walls`)
+## 📦 Instalación
 
-El repositorio incluye un CLI autónomo para gestionar la colección y la integración en el sistema:
+walls es un componente del CLI público de [dotfiles](https://github.com/anthonyportugal/dotfiles), que se encarga de su instalación y sus enlaces:
 
 ```bash
-# Iniciar el asistente de configuración interactivo (vincula colección, comando CLI y audita estado)
-./bin/walls setup
+dotfiles add walls
+```
 
-# O iniciar directamente en español
-./bin/walls setup --lang es
+Esto clona el repositorio en un commit fijado dentro de `~/.local/share/dotfiles/walls` y crea dos enlaces:
 
-# Resincronizar los enlaces simbólicos de fondos y CLI sin tocar Git
-walls sync
+- `wallpapers/` → `~/.local/share/wallpapers`
+- `bin/walls` → `~/.local/bin/walls`
 
-# Descargar las últimas actualizaciones del repositorio remoto y resincronizar
-walls update
+El diagnóstico, la resincronización, las actualizaciones y la desvinculación también los gestiona el CLI `dotfiles`.
 
-# Vincular fondos en ~/.local/share/wallpapers y el comando en ~/.local/bin/walls
-./bin/walls link
+---
 
-# Verificar la salud del repositorio, formatos y estado de los enlaces
-walls doctor
+## 🛠️ CLI de la Colección (`bin/walls`)
 
+`bin/walls` es una herramienta mínima para la propia colección. Resuelve su ruta real, así que funciona igual a través de `~/.local/bin/walls`:
+
+```bash
 # Listar todos los fondos con resolución y tamaño de archivo
 walls list
 
-# Agregar una nueva imagen (convierte a WebP y numera w-XXX en wallpapers/)
+# Agregar una nueva imagen (convierte a WebP, numera w-XXX en wallpapers/ y refresca la galería)
 walls add ~/Downloads/wallpaper.png
+walls add ~/Downloads/wallpaper.png --name w-010 --quality 90
 
-# Desvincular de ~/.local/share/wallpapers y ~/.local/bin/walls
-walls unlink
+# Regenerar la galería de README.md
+walls update-readme
+
+# Mostrar la ayuda en español
+walls help --lang es
 ```
+
+`scripts/optimize.sh [calidad]` convierte a WebP cualquier PNG/JPG que quede en `wallpapers/`.
 
 ---
 
@@ -89,10 +94,10 @@ feh --no-fehbg --bg-fill ~/.local/share/wallpapers/w-001.webp
 
 ### 3. Bootstrap Integrado de Dotfiles
 
-Al iniciar el ecosistema mediante [anthonyportugal/dotfiles](https://github.com/anthonyportugal/dotfiles):
+Tras iniciar el ecosistema mediante [anthonyportugal/dotfiles](https://github.com/anthonyportugal/dotfiles), agrega la colección como componente:
 
 ```bash
-dotfiles bootstrap --profile desktop --wm mangowm --wallpapers --apply
+dotfiles add walls
 ```
 
 ---

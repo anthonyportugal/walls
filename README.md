@@ -17,51 +17,56 @@ Curated collection of high-resolution, lightweight wallpapers optimized for mini
 > 🧩 **Modular Dotfiles Ecosystem:**  
 > [Base & CLI](https://github.com/anthonyportugal/dotfiles) • [MangoWM (Wayland)](https://github.com/anthonyportugal/dotfiles-mangowm) • [BSPWM (X11)](https://github.com/anthonyportugal/dotfiles-bspwm) • **Wallpapers [Current]** • [System](https://github.com/anthonyportugal/dotfiles-system)
 > 
-> Designed to integrate seamlessly with [anthonyportugal/dotfiles](https://github.com/anthonyportugal/dotfiles) (both MangoWM and BSPWM sessions) or function as a completely standalone wallpaper manager.
+> Installed and linked by [anthonyportugal/dotfiles](https://github.com/anthonyportugal/dotfiles) with `dotfiles add walls` (both MangoWM and BSPWM sessions).
 
 ---
 
 ## ✨ Key Highlights
 
 - ⚡ **Pure WebP Storage:** Zero uncompressed PNG/JPG bloat; 50–80% smaller clone size with reduced memory consumption in wallpaper daemons.
-- 🛠️ **Standalone Management CLI:** Seamlessly add, auto-convert, list, link, and diagnose wallpapers via `bin/walls`.
+- 🛠️ **Collection CLI:** Add, auto-convert and list wallpapers via `bin/walls`; installation is a single `dotfiles add walls`.
 - 🎛️ **Dual-WM Compatibility:** Plug-and-play integration with `swaybg` (Wayland / MangoWM) and `feh` (X11 / BSPWM).
 - 🖼️ **Automated Gallery:** Instant Markdown preview table generator keeping the README clean, responsive, and up-to-date.
 
 ---
 
-## 🛠️ Management CLI (`bin/walls`)
+## 📦 Installation
 
-The repository includes a standalone CLI to manage the collection and system integration:
+walls is a component of the public [dotfiles](https://github.com/anthonyportugal/dotfiles) CLI, which owns its installation and links:
 
 ```bash
-# Launch the interactive setup wizard (links collection, CLI command & audits health)
-./bin/walls setup
+dotfiles add walls
+```
 
-# Or launch directly in Spanish
-./bin/walls setup --lang es
+This clones the repository at a pinned commit into `~/.local/share/dotfiles/walls` and creates two links:
 
-# Re-synchronize wallpaper and CLI symlinks without touching Git
-walls sync
+- `wallpapers/` → `~/.local/share/wallpapers`
+- `bin/walls` → `~/.local/bin/walls`
 
-# Pull latest updates from remote repository and re-synchronize
-walls update
+Health checks, re-synchronization, updates and unlinking are handled by the `dotfiles` CLI as well.
 
-# Link wallpapers to ~/.local/share/wallpapers and command to ~/.local/bin/walls
-./bin/walls link
+---
 
-# Check repository health, formats, and link status
-walls doctor
+## 🛠️ Collection CLI (`bin/walls`)
 
+`bin/walls` is a minimal tool for the collection itself. It resolves its real path, so it works the same through `~/.local/bin/walls`:
+
+```bash
 # List all wallpapers with resolution and file size
 walls list
 
-# Add a new image (converts to WebP, auto-numbers w-XXX in wallpapers/)
+# Add a new image (converts to WebP, auto-numbers w-XXX in wallpapers/, refreshes the gallery)
 walls add ~/Downloads/wallpaper.png
+walls add ~/Downloads/wallpaper.png --name w-010 --quality 90
 
-# Unlink from ~/.local/share/wallpapers and ~/.local/bin/walls
-walls unlink
+# Regenerate the gallery below in README.md
+walls update-readme
+
+# Show help (also in Spanish with --lang es)
+walls help
 ```
+
+`scripts/optimize.sh [quality]` converts any PNG/JPG left in `wallpapers/` to WebP.
 
 ---
 
@@ -89,10 +94,10 @@ feh --no-fehbg --bg-fill ~/.local/share/wallpapers/w-001.webp
 
 ### 3. Integrated Dotfiles Bootstrap
 
-When bootstrapping the ecosystem via [anthonyportugal/dotfiles](https://github.com/anthonyportugal/dotfiles):
+After bootstrapping the ecosystem via [anthonyportugal/dotfiles](https://github.com/anthonyportugal/dotfiles), add the collection as a component:
 
 ```bash
-dotfiles bootstrap --profile desktop --wm mangowm --wallpapers --apply
+dotfiles add walls
 ```
 
 ---
