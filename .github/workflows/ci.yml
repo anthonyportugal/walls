@@ -61,10 +61,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v7
 
-      - name: Install dependencies (webp)
+      - name: Install dependencies (webp, imagemagick)
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y -qq webp
+          sudo apt-get install -y -qq webp imagemagick
 
       - name: Run smoke tests
         run: |
