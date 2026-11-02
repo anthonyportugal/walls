@@ -10,11 +10,6 @@ on:
       - 'wallpapers/**'
   pull_request:
     branches: [ "main" ]
-    paths-ignore:
-      - '**.md'
-      - 'LICENSE'
-      - '.gitignore'
-      - 'wallpapers/**'
   workflow_dispatch:
 
 jobs:
