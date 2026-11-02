@@ -14,9 +14,6 @@
 Colección curada de fondos de pantalla ligeros y en alta resolución optimizados para escritorios minimalistas en Linux, gestores de ventanas en mosaico y la paleta de colores [Catppuccin Mocha](https://github.com/catppuccin/catppuccin).
 
 > [!TIP]
-> 🧩 **Ecosistema Modular de Dotfiles:**  
-> [Base y CLI](https://github.com/anthonyportugal/dotfiles) • [MangoWM (Wayland)](https://github.com/anthonyportugal/dotfiles-mangowm) • [BSPWM (X11)](https://github.com/anthonyportugal/dotfiles-bspwm) • **Fondos de Pantalla [Actual]** • [Sistema](https://github.com/anthonyportugal/dotfiles-system)
-> 
 > Se instala y enlaza con [anthonyportugal/dotfiles](https://github.com/anthonyportugal/dotfiles) mediante `dotfiles add walls` (tanto en sesiones MangoWM como BSPWM).
 
 ---

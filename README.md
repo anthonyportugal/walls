@@ -14,9 +14,6 @@
 Curated collection of high-resolution, lightweight wallpapers optimized for minimalist Linux setups, tiling window managers, and the [Catppuccin Mocha](https://github.com/catppuccin/catppuccin) color palette.
 
 > [!TIP]
-> 🧩 **Modular Dotfiles Ecosystem:**  
-> [Base & CLI](https://github.com/anthonyportugal/dotfiles) • [MangoWM (Wayland)](https://github.com/anthonyportugal/dotfiles-mangowm) • [BSPWM (X11)](https://github.com/anthonyportugal/dotfiles-bspwm) • **Wallpapers [Current]** • [System](https://github.com/anthonyportugal/dotfiles-system)
-> 
 > Installed and linked by [anthonyportugal/dotfiles](https://github.com/anthonyportugal/dotfiles) with `dotfiles add walls` (both MangoWM and BSPWM sessions).
 
 ---
