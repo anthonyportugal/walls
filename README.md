@@ -1,5 +1,9 @@
 # Walls
 
+> [!WARNING]
+> **This is the `legacy` branch**: the old multi-repository setup, kept as it was and no longer updated. The maintained version is the monorepo on [`main`](https://github.com/anthonyportugal/dotfiles).
+
+
 <p align="center">
   <a href="https://github.com/anthonyportugal/walls/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/anthonyportugal/walls/ci.yml?branch=main&style=flat-square&logo=githubactions&logoColor=white&label=CI" alt="CI"></a>
   <a href="https://kernel.org"><img src="https://img.shields.io/badge/OS-Linux-FCC624?style=flat-square&logo=linux&logoColor=black" alt="Linux"></a>
@@ -15,9 +19,9 @@ Curated collection of high-resolution, lightweight wallpapers optimized for mini
 
 > [!TIP]
 > 🧩 **Modular Dotfiles Ecosystem:**  
-> [Base & CLI](https://github.com/anthonyportugal/dotfiles) • [MangoWM (Wayland)](https://github.com/anthonyportugal/dotfiles-mangowm) • [BSPWM (X11)](https://github.com/anthonyportugal/dotfiles-bspwm) • **Wallpapers [Current]** • [System](https://github.com/anthonyportugal/dotfiles-system)
+> [Base & CLI](https://github.com/anthonyportugal/dotfiles/tree/legacy) • [MangoWM (Wayland)](https://github.com/anthonyportugal/dotfiles-mangowm) • [BSPWM (X11)](https://github.com/anthonyportugal/dotfiles-bspwm) • **Wallpapers [Current]** • [System](https://github.com/anthonyportugal/dotfiles-system)
 > 
-> Designed to integrate seamlessly with [anthonyportugal/dotfiles](https://github.com/anthonyportugal/dotfiles) (both MangoWM and BSPWM sessions) or function as a completely standalone wallpaper manager.
+> Designed to integrate seamlessly with [anthonyportugal/dotfiles](https://github.com/anthonyportugal/dotfiles/tree/legacy) (both MangoWM and BSPWM sessions) or function as a completely standalone wallpaper manager.
 
 ---
 
@@ -89,7 +93,7 @@ feh --no-fehbg --bg-fill ~/.local/share/wallpapers/w-001.webp
 
 ### 3. Integrated Dotfiles Bootstrap
 
-When bootstrapping the ecosystem via [anthonyportugal/dotfiles](https://github.com/anthonyportugal/dotfiles):
+When bootstrapping the ecosystem via [anthonyportugal/dotfiles](https://github.com/anthonyportugal/dotfiles/tree/legacy):
 
 ```bash
 dotfiles bootstrap --profile desktop --wm mangowm --wallpapers --apply

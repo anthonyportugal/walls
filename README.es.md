@@ -1,5 +1,9 @@
 # Walls
 
+> [!WARNING]
+> **Esta es la rama `legacy`**: la configuración anterior de varios repositorios, conservada tal cual y sin más actualizaciones. La versión mantenida es el monorepo en [`main`](https://github.com/anthonyportugal/dotfiles).
+
+
 <p align="center">
   <a href="https://github.com/anthonyportugal/walls/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/anthonyportugal/walls/ci.yml?branch=main&style=flat-square&logo=githubactions&logoColor=white&label=CI" alt="CI"></a>
   <a href="https://kernel.org"><img src="https://img.shields.io/badge/SO-Linux-FCC624?style=flat-square&logo=linux&logoColor=black" alt="Linux"></a>
@@ -15,9 +19,9 @@ Colección curada de fondos de pantalla ligeros y en alta resolución optimizado
 
 > [!TIP]
 > 🧩 **Ecosistema Modular de Dotfiles:**  
-> [Base y CLI](https://github.com/anthonyportugal/dotfiles) • [MangoWM (Wayland)](https://github.com/anthonyportugal/dotfiles-mangowm) • [BSPWM (X11)](https://github.com/anthonyportugal/dotfiles-bspwm) • **Fondos de Pantalla [Actual]** • [Sistema](https://github.com/anthonyportugal/dotfiles-system)
+> [Base y CLI](https://github.com/anthonyportugal/dotfiles/tree/legacy) • [MangoWM (Wayland)](https://github.com/anthonyportugal/dotfiles-mangowm) • [BSPWM (X11)](https://github.com/anthonyportugal/dotfiles-bspwm) • **Fondos de Pantalla [Actual]** • [Sistema](https://github.com/anthonyportugal/dotfiles-system)
 > 
-> Diseñado para integrarse perfectamente con [anthonyportugal/dotfiles](https://github.com/anthonyportugal/dotfiles) (tanto en sesiones MangoWM como BSPWM) o para funcionar como un gestor de fondos de pantalla totalmente autónomo.
+> Diseñado para integrarse perfectamente con [anthonyportugal/dotfiles](https://github.com/anthonyportugal/dotfiles/tree/legacy) (tanto en sesiones MangoWM como BSPWM) o para funcionar como un gestor de fondos de pantalla totalmente autónomo.
 
 ---
 
@@ -89,7 +93,7 @@ feh --no-fehbg --bg-fill ~/.local/share/wallpapers/w-001.webp
 
 ### 3. Bootstrap Integrado de Dotfiles
 
-Al iniciar el ecosistema mediante [anthonyportugal/dotfiles](https://github.com/anthonyportugal/dotfiles):
+Al iniciar el ecosistema mediante [anthonyportugal/dotfiles](https://github.com/anthonyportugal/dotfiles/tree/legacy):
 
 ```bash
 dotfiles bootstrap --profile desktop --wm mangowm --wallpapers --apply
